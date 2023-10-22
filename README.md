@@ -5,8 +5,8 @@ This is the GitHub repository for the group H in collective behaviour 2023/2024
 ## Members : 
 Clara STAVUN : @cstavun  
 Kim GEORGET : @kimgeorget  
-Meggy CHAMAND :  
-Bella MURADIAN :  
+Meggy CHAMAND : @meggy-lie-anne
+Bella MURADIAN : @squirreln1
 
 
 ## Introduction : 
