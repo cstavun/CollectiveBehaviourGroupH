@@ -3,10 +3,10 @@ This is the GitHub repository for the group H in collective behaviour 2023/2024
 
 
 ## Members : 
-Clara STAVUN : [@cstavun ](https://github.com/cstavun) 
-Kim GEORGET : [@kimgeorget  ](https://github.com/cstavun)
-Meggy CHAMAND : [@meggy-lie-anne](https://github.com/cstavun)
-Bella MURADIAN : [@squirreln1](https://github.com/cstavun)
+Clara STAVUN : [@cstavun ](https://github.com/cstavun)  
+Kim GEORGET : [@kimgeorget  ](https://github.com/cstavun)  
+Meggy CHAMAND : [@meggy-lie-anne](https://github.com/cstavun)  
+Bella MURADIAN : [@squirreln1](https://github.com/cstavun)  
 
 
 ## Introduction : 
