@@ -38,16 +38,16 @@ Finally, we will try to use the model to explain or solve problems in other area
 Here is how we plan to carry out this project.
 
 Phase 1 : 23/10/2023 - 19/11/2023
-During this phase, we will conduct extensive research on the subject to gain a general understanding of how ant-based models work and explore existing models in this area. Simultaneously, we will install all the necessary tools for implementing the model. Additionally, we aim to develop the initial version of our model.
+During this phase, we will conduct extensive research on the subject to gain a general understanding of how ant-based models work and explore existing models in this area. Simultaneously, we will install all the necessary tools for implementing the model. Additionally, we aim to develop the initial version of our model.  
 *19th November 2023 : First report* 
 
 Phase 2 : 19/11/2023 - 17/12/2023
-During these weeks, we will test our model's accuracy with various parameters. Thanks to these tests, we'll be able to improve the model.
+During these weeks, we will test our model's accuracy with various parameters. Thanks to these tests, we'll be able to improve the model.  
 *17th December 2023 : Second report* 
 
 Phase 3 : 17/12/2023 - 07/01/2024
 This phase includes time for addressing any potential delays from the previous phase and optimizing the model. 
-Depending on the remaining time, we will explore applications of the model to other problems and conduct tests to assess its efficacy.
+Depending on the remaining time, we will explore applications of the model to other problems and conduct tests to assess its efficacy.  
 *7th January 2024 : Last report*
 
 
