@@ -8,6 +8,9 @@ Kim GEORGET : @kimgeorget
 Meggy CHAMAND : @meggy-lie-anne
 Bella MURADIAN : @squirreln1
 
+## Repository Structure :
+- **FirstReport:** contains both source and a prebuilt PDF
+
 
 ## Introduction : 
 We were looking for an article that highlighted the collective behavior of ants, in which we were interested, as we found their group behaviour impressive. We settled for this paper : "An agent-based model of nest-site selection in a mass-recruiting ant" by Adam L. Conin. Not only does it explain single ants behaviour, but it also studies how individual parameters lead to collective decisions, in particular during househunting, in a mass-recruting ant species. 
