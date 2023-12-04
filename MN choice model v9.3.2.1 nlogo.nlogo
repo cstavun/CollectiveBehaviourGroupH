@@ -76,6 +76,9 @@ nests-own
   votes                ;; number of times ants accepted the nest
   tq                   ;; time at which first quorum threshold was achieved at the nest
   brood                ;; number of brood at the nest
+  food                 ;; if a food source is present next to it
+  protection           ;; if the nest is protected
+  predator             ;; if a predator is present
 ]
 
 
@@ -156,6 +159,9 @@ to setup-nests
      set tq 0
      set brood 0
      set quality-class "bad" ; default for all nests
+     set food false
+     set protection false
+     set predator false
    ]
 
  ;geolocate nests in circle
@@ -1135,7 +1141,7 @@ SWITCH
 570
 dynamic-environment?
 dynamic-environment?
-0
+1
 1
 -1000
 
