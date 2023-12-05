@@ -159,7 +159,7 @@ to setup-nests
      set tq 0
      set brood 0
      set quality-class "bad" ; default for all nests
-     set food false
+     set food true
      set protection false
      set predator false
    ]
@@ -199,7 +199,117 @@ to setup-nests
       ask patches in-radius (nest-size * 1.5) [set patch-ID 99] ; set different ID for home nest patches
       set brood floor colony-size * brood-percent / 100
     ]
-   recolor-nests
+  let food1 Nest1Food
+
+  ;let listFood [food1 Nest2Food Nest3Food Nest4Food Nest5Food Nest6Food Nest7Food Nest8Food Nest9Food Nest10Food Nest11Food Nest12Food Nest13Food Nest14Food Nest15Food Nest16Food]
+  let j 1 ;Start at 1 because the nest 0 is the initial nest
+  while [j <= number-of-nests]
+    [
+      ask nest j
+        [
+          ifelse j = 1 [
+            set food Nest1Food
+            set protection Nest1Protection
+            set predator Nest1Predator
+          ] [
+            ifelse j = 2 [
+              set food Nest2Food
+              set protection Nest2Protection
+              set predator Nest2Predator
+            ] [
+              ifelse j = 3 [
+                set food Nest3Food
+                set protection Nest3Protection
+                set predator Nest3Predator
+              ] [
+                ifelse j = 4 [
+                  set food Nest4Food
+                  set protection Nest4Protection
+                  set predator Nest4Predator
+                ] [
+                  ifelse j = 5 [
+                    set food Nest5Food
+                    set protection Nest5Protection
+                    set predator Nest5Predator
+                  ] [
+                    ifelse j = 6 [
+                      set food Nest6Food
+                      set protection Nest6Protection
+                      set predator Nest6Predator
+                    ] [
+                      ifelse j = 7 [
+                        set food Nest7Food
+                        set protection Nest7Protection
+                        set predator Nest7Predator
+                      ] [
+                        ifelse j = 8 [
+                          set food Nest8Food
+                          set protection Nest8Protection
+                          set predator Nest8Predator
+                        ] [
+                          ifelse j = 9 [
+                            set food Nest9Food
+                            set protection Nest9Protection
+                            set predator Nest9Predator
+                          ] [
+                            ifelse j = 10 [
+                              set food Nest10Food
+                              set protection Nest10Protection
+                              set predator Nest10Predator
+                            ] [
+                              ifelse j = 11 [
+                                set food Nest11Food
+                                set protection Nest11Protection
+                                set predator Nest11Predator
+                              ] [
+                                ifelse j = 12 [
+                                  set food Nest12Food
+                                  set protection Nest12Protection
+                                  set predator Nest12Predator
+                                ] [
+                                  ifelse j = 13 [
+                                    set food Nest13Food
+                                    set protection Nest13Protection
+                                    set predator Nest13Predator
+                                  ] [
+                                    ifelse j = 14 [
+                                      set food Nest14Food
+                                      set protection Nest14Protection
+                                      set predator Nest14Predator
+                                    ] [
+                                      ifelse j = 15 [
+                                        set food Nest15Food
+                                        set protection Nest15Protection
+                                        set predator Nest15Predator
+                                      ] [
+                                          set food Nest16Food
+                                          set protection Nest16Protection
+                                          set predator Nest16Predator
+                                      ]
+                                    ]
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+          ; the following code is used for better vizualisation but needs to be changed
+          if food [
+            print(j)
+            print("ok")
+            set color orange
+          ]
+        ]
+      set j j + 1
+    ]
+  ;recolor-nests
 end
 
 to setup-ants
@@ -505,6 +615,8 @@ to recolor-nests ; sets nest colour based on current quality
       [set color grey]
   ]
 end
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 741
@@ -617,7 +729,7 @@ quality-bad-nests
 quality-bad-nests
 0
 100
-87.0
+100.0
 1
 1
 NIL
@@ -1019,7 +1131,7 @@ nest-size
 nest-size
 0
 5
-0.0
+5.0
 1
 1
 NIL
@@ -1141,7 +1253,7 @@ SWITCH
 570
 dynamic-environment?
 dynamic-environment?
-1
+0
 1
 -1000
 
@@ -1154,7 +1266,7 @@ switch-point
 switch-point
 0
 15000
-20.0
+8.0
 1
 1
 NIL
@@ -1187,7 +1299,7 @@ SWITCH
 680
 Nest1Food
 Nest1Food
-1
+0
 1
 -1000
 
@@ -1198,7 +1310,7 @@ SWITCH
 678
 Nest1Protection
 Nest1Protection
-1
+0
 1
 -1000
 
@@ -1253,7 +1365,7 @@ SWITCH
 770
 Nest3Food
 Nest3Food
-1
+0
 1
 -1000
 
@@ -1264,7 +1376,7 @@ SWITCH
 815
 Nest4Food
 Nest4Food
-1
+0
 1
 -1000
 
@@ -1286,7 +1398,7 @@ SWITCH
 904
 Nest6Food
 Nest6Food
-1
+0
 1
 -1000
 
@@ -1297,7 +1409,7 @@ SWITCH
 950
 Nest7Food
 Nest7Food
-1
+0
 1
 -1000
 
@@ -1308,7 +1420,7 @@ SWITCH
 994
 Nest8Food
 Nest8Food
-1
+0
 1
 -1000
 
@@ -1330,7 +1442,7 @@ SWITCH
 1082
 Nest10Food
 Nest10Food
-1
+0
 1
 -1000
 
@@ -1374,7 +1486,7 @@ SWITCH
 1264
 Nest14Food
 Nest14Food
-1
+0
 1
 -1000
 
@@ -1396,7 +1508,7 @@ SWITCH
 1356
 Nest16Food
 Nest16Food
-1
+0
 1
 -1000
 
