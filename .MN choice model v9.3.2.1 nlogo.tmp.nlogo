@@ -282,11 +282,9 @@ to setup-nests
                                         set protection Nest15Protection
                                         set predator Nest15Predator
                                       ] [
-                                        ifelse j = 16
                                           set food Nest16Food
                                           set protection Nest16Protection
                                           set predator Nest16Predator
-                                        ]
                                       ]
                                     ]
                                   ]
@@ -302,17 +300,7 @@ to setup-nests
               ]
             ]
           ]
-          ; the following code is used for better vizualisation but needs to be changed
-          if food [
-            print(j)
-            print("ok")
-            set color orange
-          ]
-        ]
-      set j j + 1
-    ]
-  ;recolor-nests
-end
+
 
 to setup-ants
   create-ants colony-size
@@ -618,7 +606,6 @@ to recolor-nests ; sets nest colour based on current quality
   ]
 end
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 741
@@ -859,7 +846,7 @@ CHOOSER
 number-of-nests
 number-of-nests
 1 2 4 8 16
-1
+4
 
 SWITCH
 11
@@ -1389,7 +1376,7 @@ SWITCH
 859
 Nest5Food
 Nest5Food
-0
+1
 1
 -1000
 
@@ -1433,7 +1420,7 @@ SWITCH
 1038
 Nest9Food
 Nest9Food
-0
+1
 1
 -1000
 
@@ -1455,7 +1442,7 @@ SWITCH
 1128
 Nest11Food
 Nest11Food
-0
+1
 1
 -1000
 
@@ -1466,7 +1453,7 @@ SWITCH
 1174
 Nest12Food
 Nest12Food
-0
+1
 1
 -1000
 
@@ -1477,7 +1464,7 @@ SWITCH
 1219
 Nest13Food
 Nest13Food
-0
+1
 1
 -1000
 
@@ -1499,7 +1486,7 @@ SWITCH
 1310
 Nest15Food
 Nest15Food
-0
+1
 1
 -1000
 

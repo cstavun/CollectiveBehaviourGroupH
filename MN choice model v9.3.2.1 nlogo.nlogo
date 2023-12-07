@@ -301,10 +301,48 @@ to setup-nests
             ]
           ]
           ; the following code is used for better vizualisation but needs to be changed
+          ;let circle-xcor 0
+          ;let circle-ycor 0
+          ;let radius-c 45
+
+          ;let predator-xcor 0
+          ;let predator-ycor 0
+          ;let radius-p 45
+
+
+          let circle-xcor 0
+          let circle-ycor 0
+          ;let radius-c 45
+
+          ;let predator-xcor 0
+          ;let predator-ycor 0
+          ;let radius-p 45
+          let initial-angle 360 / number-of-nests * who
+
           if food [
             print(j)
-            print("ok")
-            set color orange
+            print("food !")
+            let radius 50
+            hatch 1 [
+              set shape "square"
+              set size 2
+              set color violet
+              ;let initial-angle 360 / number-of-nests * who
+              set circle-xcor radius * cos initial-angle
+              set circle-ycor radius * sin initial-angle
+              setxy circle-xcor circle-ycor
+            ]
+          ]
+
+          if predator [
+            print(j)
+            print("predator !")
+            hatch 1 [
+              set shape "triangle"
+              set size 2
+              set color red
+              setxy circle-xcor circle-ycor
+            ]
           ]
         ]
       set j j + 1
@@ -615,7 +653,6 @@ to recolor-nests ; sets nest colour based on current quality
       [set color grey]
   ]
 end
-
 
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -1321,7 +1358,7 @@ SWITCH
 677
 Nest1Predator
 Nest1Predator
-1
+0
 1
 -1000
 
@@ -1332,7 +1369,7 @@ SWITCH
 725
 Nest2Food
 Nest2Food
-1
+0
 1
 -1000
 
@@ -1673,7 +1710,7 @@ SWITCH
 771
 Nest3Predator
 Nest3Predator
-1
+0
 1
 -1000
 
