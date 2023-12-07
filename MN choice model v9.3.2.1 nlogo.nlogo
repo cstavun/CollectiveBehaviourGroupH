@@ -337,10 +337,13 @@ to setup-nests
           if predator [
             print(j)
             print("predator !")
+            let radius 50
             hatch 1 [
               set shape "triangle"
               set size 2
               set color red
+              set circle-xcor (radius * cos (initial-angle + 3))
+              set circle-ycor (radius * sin (initial-angle + 3))
               setxy circle-xcor circle-ycor
             ]
           ]
@@ -653,7 +656,6 @@ to recolor-nests ; sets nest colour based on current quality
       [set color grey]
   ]
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 741
