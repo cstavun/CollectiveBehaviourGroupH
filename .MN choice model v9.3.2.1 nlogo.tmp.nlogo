@@ -199,7 +199,7 @@ to setup-nests
       ask patches in-radius (nest-size * 1.5) [set patch-ID 99] ; set different ID for home nest patches
       set brood floor colony-size * brood-percent / 100
     ]
-  let food1 Nest1Food
+  ;let food1 Nest1Food
 
   ;let listFood [food1 Nest2Food Nest3Food Nest4Food Nest5Food Nest6Food Nest7Food Nest8Food Nest9Food Nest10Food Nest11Food Nest12Food Nest13Food Nest14Food Nest15Food Nest16Food]
   let j 1 ;Start at 1 because the nest 0 is the initial nest
@@ -300,7 +300,58 @@ to setup-nests
               ]
             ]
           ]
+          ; the following code is used for better vizualisation but needs to be changed
+          ;let circle-xcor 0
+          ;let circle-ycor 0
+          ;let radius-c 45
 
+          ;let predator-xcor 0
+          ;let predator-ycor 0
+          ;let radius-p 45
+
+
+          let circle-xcor 0
+          let circle-ycor 0
+          ;let radius-c 45
+
+          ;let predator-xcor 0
+          ;let predator-ycor 0
+          ;let radius-p 45
+          let initial-angle 360 / number-of-nests * who
+
+          if food [
+            print(j)
+            print("food !")
+            let radius 4
+            hatch 1 [
+              set shape "square"
+              set size 2
+              set color violet
+              ;let initial-angle 360 / number-of-nests * who
+              set circle-xcor radius * cos initial-angle
+              set circle-ycor radius * sin initial-angle
+              setxy circle-xcor circle-ycor
+            ]
+          ]
+
+          if predator [
+            print(j)
+            print("predator !")
+            let radius 47
+            hatch 1 [
+              set shape "triangle"
+              set size 2
+              set color red
+              set circle-xcor (radius * cos (initial-angle + 3))
+              set circle-ycor (radius * sin (initial-angle + 3))
+              setxy circle-xcor circle-ycor
+            ]
+          ]
+        ]
+      set j j + 1
+    ]
+  ;recolor-nests
+end
 
 to setup-ants
   create-ants colony-size
@@ -1242,7 +1293,7 @@ SWITCH
 570
 dynamic-environment?
 dynamic-environment?
-0
+1
 1
 -1000
 
@@ -1310,7 +1361,7 @@ SWITCH
 677
 Nest1Predator
 Nest1Predator
-1
+0
 1
 -1000
 
@@ -1321,7 +1372,7 @@ SWITCH
 725
 Nest2Food
 Nest2Food
-1
+0
 1
 -1000
 
@@ -1343,7 +1394,7 @@ SWITCH
 723
 Nest2Predator
 Nest2Predator
-1
+0
 1
 -1000
 
@@ -1365,7 +1416,7 @@ SWITCH
 815
 Nest4Food
 Nest4Food
-0
+1
 1
 -1000
 
@@ -1376,7 +1427,7 @@ SWITCH
 859
 Nest5Food
 Nest5Food
-1
+0
 1
 -1000
 
@@ -1398,7 +1449,7 @@ SWITCH
 950
 Nest7Food
 Nest7Food
-0
+1
 1
 -1000
 
@@ -1409,7 +1460,7 @@ SWITCH
 994
 Nest8Food
 Nest8Food
-0
+1
 1
 -1000
 
@@ -1431,7 +1482,7 @@ SWITCH
 1082
 Nest10Food
 Nest10Food
-0
+1
 1
 -1000
 
@@ -1475,7 +1526,7 @@ SWITCH
 1264
 Nest14Food
 Nest14Food
-0
+1
 1
 -1000
 
@@ -1497,7 +1548,7 @@ SWITCH
 1356
 Nest16Food
 Nest16Food
-0
+1
 1
 -1000
 
@@ -1695,7 +1746,7 @@ SWITCH
 903
 Nest6Predator
 Nest6Predator
-1
+0
 1
 -1000
 
