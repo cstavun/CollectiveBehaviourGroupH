@@ -337,7 +337,7 @@ to setup-nests
           if protection [
             print(j)
             print("protection !")
-            let radius 50
+            let radius 47*
             hatch 1 [
               set shape "star"
               set size 2
@@ -1756,7 +1756,7 @@ SWITCH
 948
 Nest7Predator
 Nest7Predator
-0
+1
 1
 -1000
 
@@ -1767,7 +1767,7 @@ SWITCH
 994
 Nest8Predator
 Nest8Predator
-0
+1
 1
 -1000
 
@@ -1778,7 +1778,7 @@ SWITCH
 1039
 Nest9Predator
 Nest9Predator
-0
+1
 1
 -1000
 
