@@ -151,7 +151,7 @@ to setup-nests
      set size nest-size
      set color grey
      set shape "circle"
-     set quality 0
+     set quality 50
      set first-in 0
      set first-trans 0
      set switchers 0
@@ -179,14 +179,14 @@ to setup-nests
     ]
 
   let new-nests nests with [who > 0] ; create seperate nest set excluding the home nest
-  ask new-nests [set quality quality-bad-nests] ; set quality to bad for all new nests
+  ;ask new-nests [set quality quality-bad-nests] ; set quality to bad for all new nests
   let number-of-good 0
   ifelse good-nests = "single"
     [set number-of-good 1]
     [set number-of-good ceiling (count new-nests / 2)]
   ask n-of number-of-good new-nests ; assign good quality to random nest(s) according to slider
     [
-      set quality quality-good-nests
+      ;set quality quality-good-nests
       set quality-class "good"
     ]
   ask nests [ask patches in-radius (nest-size * 1.5) ; create findable area around each nest agent
@@ -300,15 +300,17 @@ to setup-nests
               ]
             ]
           ]
+
+
           ; the following code is used for better vizualisation but needs to be changed
+          print(quality)
 
           let circle-xcor 0
           let circle-ycor 0
           let initial-angle 360 / number-of-nests * who
 
           if food [
-            print(j)
-            print("food !")
+            set quality quality + 20
             let radius 50
             hatch 1 [
               set shape "square"
@@ -321,8 +323,7 @@ to setup-nests
           ]
 
           if predator [
-            print(j)
-            print("predator !")
+            set quality quality - 30
             let radius 50
             hatch 1 [
               set shape "triangle"
@@ -335,8 +336,7 @@ to setup-nests
           ]
 
           if protection [
-            print(j)
-            print("protection !")
+            set quality quality + 20
             let radius 50
             hatch 1 [
               set shape "star"
@@ -347,6 +347,7 @@ to setup-nests
               setxy circle-xcor circle-ycor
             ]
           ]
+          print(quality)
         ]
       set j j + 1
     ]
@@ -425,6 +426,7 @@ to search
           ifelse [quality-class] of nest ID = "good"  ; recolour discovered nests according to class as good or bad
             [ask nest ID [set color yellow]]
             [ask nest ID [set color orange]]
+
         ]
       ifelse quality-stay?
         [set waiting ceiling (random-exponential wait-time * ([quality] of nest ID / 100))]
@@ -437,6 +439,7 @@ to search
           ask nest ID [set votes votes + 1]
           set going-to nest 0
         ]
+
      ]
 end
 
@@ -896,7 +899,7 @@ CHOOSER
 number-of-nests
 number-of-nests
 1 2 4 8 16
-4
+2
 
 SWITCH
 11
