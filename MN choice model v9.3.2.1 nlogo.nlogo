@@ -174,6 +174,111 @@ to setup-nests
         [
           set xcor item i xcor-list
           set ycor item i ycor-list
+
+          ifelse i = 1 [
+            set food Nest1Food
+            set protection Nest1Protection
+            set predator Nest1Predator
+          ] [
+            ifelse i = 2 [
+              set food Nest2Food
+              set protection Nest2Protection
+              set predator Nest2Predator
+            ] [
+              ifelse i = 3 [
+                set food Nest3Food
+                set protection Nest3Protection
+                set predator Nest3Predator
+              ] [
+                ifelse i = 4 [
+                  set food Nest4Food
+                  set protection Nest4Protection
+                  set predator Nest4Predator
+                ] [
+                  ifelse i = 5 [
+                    set food Nest5Food
+                    set protection Nest5Protection
+                    set predator Nest5Predator
+                  ] [
+                    ifelse i = 6 [
+                      set food Nest6Food
+                      set protection Nest6Protection
+                      set predator Nest6Predator
+                    ] [
+                      ifelse i = 7 [
+                        set food Nest7Food
+                        set protection Nest7Protection
+                        set predator Nest7Predator
+                      ] [
+                        ifelse i = 8 [
+                          set food Nest8Food
+                          set protection Nest8Protection
+                          set predator Nest8Predator
+                        ] [
+                          ifelse i = 9 [
+                            set food Nest9Food
+                            set protection Nest9Protection
+                            set predator Nest9Predator
+                          ] [
+                            ifelse i = 10 [
+                              set food Nest10Food
+                              set protection Nest10Protection
+                              set predator Nest10Predator
+                            ] [
+                              ifelse i = 11 [
+                                set food Nest11Food
+                                set protection Nest11Protection
+                                set predator Nest11Predator
+                              ] [
+                                ifelse i = 12 [
+                                  set food Nest12Food
+                                  set protection Nest12Protection
+                                  set predator Nest12Predator
+                                ] [
+                                  ifelse i = 13 [
+                                    set food Nest13Food
+                                    set protection Nest13Protection
+                                    set predator Nest13Predator
+                                  ] [
+                                    ifelse i = 14 [
+                                      set food Nest14Food
+                                      set protection Nest14Protection
+                                      set predator Nest14Predator
+                                    ] [
+                                      ifelse i = 15 [
+                                        set food Nest15Food
+                                        set protection Nest15Protection
+                                        set predator Nest15Predator
+                                      ] [
+                                          set food Nest16Food
+                                          set protection Nest16Protection
+                                          set predator Nest16Predator
+                                      ]
+                                    ]
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+          set quality-class "good"
+          if food [
+            set quality quality + 20
+          ]
+          if protection [
+            set quality quality + 20
+          ]
+          if predator [
+            set quality quality - 30
+          ]
+
         ]
       set i i + 1
     ]
@@ -207,110 +312,11 @@ to setup-nests
     [
       ask nest j
         [
-          ifelse j = 1 [
-            set food Nest1Food
-            set protection Nest1Protection
-            set predator Nest1Predator
-          ] [
-            ifelse j = 2 [
-              set food Nest2Food
-              set protection Nest2Protection
-              set predator Nest2Predator
-            ] [
-              ifelse j = 3 [
-                set food Nest3Food
-                set protection Nest3Protection
-                set predator Nest3Predator
-              ] [
-                ifelse j = 4 [
-                  set food Nest4Food
-                  set protection Nest4Protection
-                  set predator Nest4Predator
-                ] [
-                  ifelse j = 5 [
-                    set food Nest5Food
-                    set protection Nest5Protection
-                    set predator Nest5Predator
-                  ] [
-                    ifelse j = 6 [
-                      set food Nest6Food
-                      set protection Nest6Protection
-                      set predator Nest6Predator
-                    ] [
-                      ifelse j = 7 [
-                        set food Nest7Food
-                        set protection Nest7Protection
-                        set predator Nest7Predator
-                      ] [
-                        ifelse j = 8 [
-                          set food Nest8Food
-                          set protection Nest8Protection
-                          set predator Nest8Predator
-                        ] [
-                          ifelse j = 9 [
-                            set food Nest9Food
-                            set protection Nest9Protection
-                            set predator Nest9Predator
-                          ] [
-                            ifelse j = 10 [
-                              set food Nest10Food
-                              set protection Nest10Protection
-                              set predator Nest10Predator
-                            ] [
-                              ifelse j = 11 [
-                                set food Nest11Food
-                                set protection Nest11Protection
-                                set predator Nest11Predator
-                              ] [
-                                ifelse j = 12 [
-                                  set food Nest12Food
-                                  set protection Nest12Protection
-                                  set predator Nest12Predator
-                                ] [
-                                  ifelse j = 13 [
-                                    set food Nest13Food
-                                    set protection Nest13Protection
-                                    set predator Nest13Predator
-                                  ] [
-                                    ifelse j = 14 [
-                                      set food Nest14Food
-                                      set protection Nest14Protection
-                                      set predator Nest14Predator
-                                    ] [
-                                      ifelse j = 15 [
-                                        set food Nest15Food
-                                        set protection Nest15Protection
-                                        set predator Nest15Predator
-                                      ] [
-                                          set food Nest16Food
-                                          set protection Nest16Protection
-                                          set predator Nest16Predator
-                                      ]
-                                    ]
-                                  ]
-                                ]
-                              ]
-                            ]
-                          ]
-                        ]
-                      ]
-                    ]
-                  ]
-                ]
-              ]
-            ]
-          ]
-
-          set quality-class "good"
-
-
-
           let circle-xcor 0
           let circle-ycor 0
           let initial-angle 360 / number-of-nests * who
 
           if food [
-            set quality quality + 20
             let radius 50
             hatch 1 [
               set shape "square"
@@ -323,7 +329,6 @@ to setup-nests
           ]
 
           if predator [
-            set quality quality - 30
             let radius 50
             hatch 1 [
               set shape "triangle"
@@ -336,7 +341,6 @@ to setup-nests
           ]
 
           if protection [
-            set quality quality + 20
             let radius 50
             hatch 1 [
               set shape "star"
@@ -350,6 +354,7 @@ to setup-nests
           print(quality)
         ]
       set j j + 1
+
     ]
   ;recolor-nests
 end
@@ -418,8 +423,10 @@ to search
   if random 100 < trail-influence [orient-to-trail]
   move
   let ID [patch-ID] of patch-here
+
   if ID > 0 and ID < 99  ; if arrive at a potential new nest site
     [
+      print(ID)
       set scout-ant 1
       print ([quality] of nest ID)
       if [quality-class] of nest ID = "good"[
@@ -707,7 +714,7 @@ colony-size
 colony-size
 1
 100
-1.0
+3.0
 1
 1
 NIL
@@ -737,7 +744,7 @@ quorum-percent
 quorum-percent
 1
 100
-45.0
+100.0
 1
 1
 NIL
@@ -910,7 +917,7 @@ CHOOSER
 number-of-nests
 number-of-nests
 1 2 4 8 16
-2
+3
 
 SWITCH
 11
@@ -1044,7 +1051,7 @@ commitment-base
 commitment-base
 50
 99.9
-71.9
+50.0
 0.1
 1
 %
@@ -1059,7 +1066,7 @@ scout-chance
 scout-chance
 0
 1
-0.2
+1.0
 0.01
 1
 NIL
@@ -1374,7 +1381,7 @@ SWITCH
 677
 Nest1Predator
 Nest1Predator
-0
+1
 1
 -1000
 
@@ -1407,7 +1414,7 @@ SWITCH
 723
 Nest2Predator
 Nest2Predator
-0
+1
 1
 -1000
 
@@ -1418,7 +1425,7 @@ SWITCH
 770
 Nest3Food
 Nest3Food
-0
+1
 1
 -1000
 
@@ -1429,7 +1436,7 @@ SWITCH
 815
 Nest4Food
 Nest4Food
-0
+1
 1
 -1000
 
@@ -1451,7 +1458,7 @@ SWITCH
 904
 Nest6Food
 Nest6Food
-0
+1
 1
 -1000
 
@@ -1462,7 +1469,7 @@ SWITCH
 950
 Nest7Food
 Nest7Food
-0
+1
 1
 -1000
 
@@ -1473,7 +1480,7 @@ SWITCH
 994
 Nest8Food
 Nest8Food
-0
+1
 1
 -1000
 
@@ -1583,7 +1590,7 @@ SWITCH
 815
 Nest4Protection
 Nest4Protection
-0
+1
 1
 -1000
 
@@ -1616,7 +1623,7 @@ SWITCH
 950
 Nest7Protection
 Nest7Protection
-0
+1
 1
 -1000
 
@@ -1627,7 +1634,7 @@ SWITCH
 996
 Nest8Protection
 Nest8Protection
-0
+1
 1
 -1000
 
@@ -1770,7 +1777,7 @@ SWITCH
 948
 Nest7Predator
 Nest7Predator
-0
+1
 1
 -1000
 
@@ -1781,7 +1788,7 @@ SWITCH
 994
 Nest8Predator
 Nest8Predator
-0
+1
 1
 -1000
 
