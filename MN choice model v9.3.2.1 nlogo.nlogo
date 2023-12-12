@@ -102,7 +102,7 @@ to go
     stop
   ]
 
- if dynamic-environment? and number-of-nests > 1 [if ticks = switch-point [switch-nest-quality]] ; if dynamic environment selected, then make change at chosen time point
+ ;if dynamic-environment? and number-of-nests > 1 [if ticks = switch-point [switch-nest-quality]] ; if dynamic environment selected, then make change at chosen time point
 
  ask ants ; run go procedures for each ant depending on its current class
     [
@@ -187,7 +187,7 @@ to setup-nests
   ask n-of number-of-good new-nests ; assign good quality to random nest(s) according to slider
     [
       ;set quality quality-good-nests
-      set quality-class "good"
+      ;set quality-class "good"
     ]
   ask nests [ask patches in-radius (nest-size * 1.5) ; create findable area around each nest agent
     [
@@ -201,7 +201,7 @@ to setup-nests
     ]
   let food1 Nest1Food
 
-  ;let listFood [food1 Nest2Food Nest3Food Nest4Food Nest5Food Nest6Food Nest7Food Nest8Food Nest9Food Nest10Food Nest11Food Nest12Food Nest13Food Nest14Food Nest15Food Nest16Food]
+
   let j 1 ;Start at 1 because the nest 0 is the initial nest
   while [j <= number-of-nests]
     [
@@ -301,9 +301,9 @@ to setup-nests
             ]
           ]
 
+          set quality-class "good"
 
-          ; the following code is used for better vizualisation but needs to be changed
-          print(quality)
+
 
           let circle-xcor 0
           let circle-ycor 0
@@ -369,11 +369,12 @@ to setup-ants
     set transports 0
     set waiting int(random-exponential wait-time)
     set carrying 0
-    ifelse accept-distribution = "normal"
-      [set accept-threshold floor random-normal base-accept-threshold acceptSD]
-      [ifelse accept-distribution = "Poisson"
-       [set accept-threshold floor random-Poisson base-accept-threshold]
-       [set accept-threshold floor random-exponential base-accept-threshold]]
+    ;ifelse accept-distribution = "normal"
+      ;[set accept-threshold floor random-normal base-accept-threshold acceptSD]
+      ;[ifelse accept-distribution = "Poisson"
+       ;[set accept-threshold floor random-Poisson base-accept-threshold]
+       ;[set accept-threshold floor random-exponential base-accept-threshold]]
+    set accept-threshold 50
     set commitment commitment-base
     set trail-influence trail-influence-base
     set scout-ant 0
@@ -420,13 +421,23 @@ to search
   if ID > 0 and ID < 99  ; if arrive at a potential new nest site
     [
       set scout-ant 1
+      print ([quality] of nest ID)
+      if [quality-class] of nest ID = "good"[
+        ifelse [quality] of nest ID >= accept-threshold
+        [set accept-threshold [quality] of nest ID
+          ask nest ID
+          [set quality-class "good"
+            set color yellow
+          ]]
+        [ask nest ID [
+          set quality-class "bad"
+          set color orange
+        ]]
+      ]
+
       if [first-in] of nest ID = 0
         [
           ask nest ID [set first-in ticks]
-          ifelse [quality-class] of nest ID = "good"  ; recolour discovered nests according to class as good or bad
-            [ask nest ID [set color yellow]]
-            [ask nest ID [set color orange]]
-
         ]
       ifelse quality-stay?
         [set waiting ceiling (random-exponential wait-time * ([quality] of nest ID / 100))]
@@ -696,7 +707,7 @@ colony-size
 colony-size
 1
 100
-30.0
+1.0
 1
 1
 NIL
@@ -726,7 +737,7 @@ quorum-percent
 quorum-percent
 1
 100
-28.0
+45.0
 1
 1
 NIL
@@ -1033,7 +1044,7 @@ commitment-base
 commitment-base
 50
 99.9
-99.5
+71.9
 0.1
 1
 %
@@ -1048,7 +1059,7 @@ scout-chance
 scout-chance
 0
 1
-0.1
+0.2
 0.01
 1
 NIL
@@ -1158,7 +1169,7 @@ max-ticks
 max-ticks
 0
 20000
-15000.0
+20000.0
 100
 1
 NIL
@@ -1352,7 +1363,7 @@ SWITCH
 678
 Nest1Protection
 Nest1Protection
-0
+1
 1
 -1000
 
@@ -1363,7 +1374,7 @@ SWITCH
 677
 Nest1Predator
 Nest1Predator
-1
+0
 1
 -1000
 
@@ -1374,7 +1385,7 @@ SWITCH
 725
 Nest2Food
 Nest2Food
-0
+1
 1
 -1000
 
@@ -1385,7 +1396,7 @@ SWITCH
 723
 Nest2Protection
 Nest2Protection
-0
+1
 1
 -1000
 
@@ -1396,7 +1407,7 @@ SWITCH
 723
 Nest2Predator
 Nest2Predator
-1
+0
 1
 -1000
 
@@ -1572,7 +1583,7 @@ SWITCH
 815
 Nest4Protection
 Nest4Protection
-1
+0
 1
 -1000
 
@@ -1715,7 +1726,7 @@ SWITCH
 771
 Nest3Predator
 Nest3Predator
-0
+1
 1
 -1000
 
