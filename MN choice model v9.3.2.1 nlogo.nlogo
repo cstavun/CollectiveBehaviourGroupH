@@ -279,6 +279,7 @@ to setup-nests
             set quality quality - 30
           ]
 
+
         ]
       set i i + 1
     ]
@@ -312,18 +313,49 @@ to setup-nests
     [
       ask nest j
         [
-          let circle-xcor 0
-          let circle-ycor 0
+          let circle-xcor xcor
+          let circle-ycor ycor
           let initial-angle 360 / number-of-nests * who
 
           if food [
-            let radius 50
+            ifelse xcor > 0 [
+              set circle-xcor circle-xcor + nest-size + 4
+              ifelse ycor > 0 [
+                set circle-ycor circle-ycor + nest-size + 4
+              ] [
+                ifelse ycor < 0 [
+                  set circle-ycor circle-ycor - nest-size - 4
+                ] [
+                  set circle-xcor  circle-xcor + 3
+                ]
+              ]
+            ] [
+              ifelse xcor < 0 [
+                set circle-xcor  circle-xcor - nest-size - 4
+                ifelse ycor > 0 [
+                  set circle-ycor  circle-ycor + nest-size + 4
+                ] [
+                  ifelse ycor < 0 [
+                    set circle-ycor  circle-ycor - nest-size - 4
+                  ] [
+                    set circle-xcor  circle-xcor - 3
+                  ]
+                ]
+              ] [
+                ifelse ycor > 0 [
+                  set circle-ycor circle-ycor + nest-size + 7
+                ] [
+                  ifelse ycor < 0 [
+                    set circle-ycor circle-ycor - nest-size - 7
+                  ] [
+                  ]
+                ]
+              ]
+            ]
             hatch 1 [
               set shape "square"
               set size 2
               set color violet
-              set circle-xcor radius * cos (initial-angle - 3)
-              set circle-ycor radius * sin (initial-angle - 3)
               setxy circle-xcor circle-ycor
             ]
           ]
@@ -334,8 +366,6 @@ to setup-nests
               set shape "triangle"
               set size 2
               set color red
-              set circle-xcor (radius * cos (initial-angle + 3))
-              set circle-ycor (radius * sin (initial-angle + 3))
               setxy circle-xcor circle-ycor
             ]
           ]
@@ -759,7 +789,7 @@ brood-percent
 brood-percent
 0
 300
-100.0
+65.0
 1
 1
 NIL
@@ -917,7 +947,7 @@ CHOOSER
 number-of-nests
 number-of-nests
 1 2 4 8 16
-3
+2
 
 SWITCH
 11
@@ -1313,7 +1343,7 @@ SWITCH
 570
 dynamic-environment?
 dynamic-environment?
-0
+1
 1
 -1000
 
@@ -1326,7 +1356,7 @@ switch-point
 switch-point
 0
 15000
-8.0
+0.0
 1
 1
 NIL
@@ -1359,7 +1389,7 @@ SWITCH
 680
 Nest1Food
 Nest1Food
-0
+1
 1
 -1000
 
@@ -1392,7 +1422,7 @@ SWITCH
 725
 Nest2Food
 Nest2Food
-1
+0
 1
 -1000
 
@@ -1425,7 +1455,7 @@ SWITCH
 770
 Nest3Food
 Nest3Food
-1
+0
 1
 -1000
 
@@ -1436,7 +1466,7 @@ SWITCH
 815
 Nest4Food
 Nest4Food
-1
+0
 1
 -1000
 
@@ -1447,7 +1477,7 @@ SWITCH
 859
 Nest5Food
 Nest5Food
-1
+0
 1
 -1000
 
@@ -1458,7 +1488,7 @@ SWITCH
 904
 Nest6Food
 Nest6Food
-1
+0
 1
 -1000
 
@@ -1469,7 +1499,7 @@ SWITCH
 950
 Nest7Food
 Nest7Food
-1
+0
 1
 -1000
 
@@ -1480,7 +1510,7 @@ SWITCH
 994
 Nest8Food
 Nest8Food
-1
+0
 1
 -1000
 
@@ -1601,7 +1631,7 @@ SWITCH
 861
 Nest5Protection
 Nest5Protection
-1
+0
 1
 -1000
 
@@ -1755,7 +1785,7 @@ SWITCH
 860
 Nest5Predator
 Nest5Predator
-1
+0
 1
 -1000
 
@@ -1766,7 +1796,7 @@ SWITCH
 903
 Nest6Predator
 Nest6Predator
-1
+0
 1
 -1000
 
@@ -1777,7 +1807,7 @@ SWITCH
 948
 Nest7Predator
 Nest7Predator
-1
+0
 1
 -1000
 
@@ -1788,7 +1818,7 @@ SWITCH
 994
 Nest8Predator
 Nest8Predator
-1
+0
 1
 -1000
 
