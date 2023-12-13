@@ -379,7 +379,7 @@ to setup-nests
                 set shape "star"
                 set size 2
                 set color yellow
-                set circle-xcor (radius * cos (initial-angle))
+                ;set circle-xcor (radius * cos (initial-angle))
                 set circle-ycor (radius * sin (initial-angle))
                 setxy circle-xcor circle-ycor
               ]
