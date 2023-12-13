@@ -2,15 +2,12 @@
 ;
 ; Mymecina nipponica nest choice model
 ;
-; Adam L Cronin
-;
-; v 9.3.2.1 20180620
+; Based on the work of Adam L Cronin : v 9.3.2.1 20180620
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 ; This model is designed to replicate the nest selection and emigration process in the ant Myrmecina nipponica.
-; Users can manipulate decision metrics used by individual ants, pheromone characteristics, environmental
-; conditions and group size.
-;
+; We decided to change the model by adding environment parameters (such as food, protection, predator)
+; The goal of the ants is now to not only find a good nest like in the original model, but to find the best one.
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -102,8 +99,6 @@ to go
     stop
   ]
 
- ;if dynamic-environment? and number-of-nests > 1 [if ticks = switch-point [switch-nest-quality]] ; if dynamic environment selected, then make change at chosen time point
-
  ask ants ; run go procedures for each ant depending on its current class
     [
       ifelse waiting > 0                 ;; wait or act according to class
@@ -120,9 +115,7 @@ to go
           if class = "transporter" [transport]
         ]
     ]
-
   diffuse pheromone (diffusion-rate)
-
   ask patches ; update environment
     [
       set pheromone pheromone * (100 - evaporation-rate) / 100  ;; slowly evaporate pheromone
@@ -159,7 +152,7 @@ to setup-nests
      set tq 0
      set brood 0
      set quality-class "bad" ; default for all nests
-     set food true
+     set food false
      set protection false
      set predator false
    ]
@@ -169,12 +162,10 @@ to setup-nests
  let ycor-list [0 38 -38 0 0 28 -28 28 -28 35 35 15 -15 -15 15 -35 -35]
  let i 0
   while [i <= number-of-nests]
-    [
-      ask nest i
-        [
+    [ask nest i [
           set xcor item i xcor-list
           set ycor item i ycor-list
-
+          ; Set the variables food, protection, predator
           ifelse i = 1 [
             set food Nest1Food
             set protection Nest1Protection
@@ -283,16 +274,6 @@ to setup-nests
     ]
 
   let new-nests nests with [who > 0] ; create seperate nest set excluding the home nest
-  ;ask new-nests [set quality quality-bad-nests] ; set quality to bad for all new nests
-  let number-of-good 0
-  ifelse good-nests = "single"
-    [set number-of-good 1]
-    [set number-of-good ceiling (count new-nests / 2)]
-  ask n-of number-of-good new-nests ; assign good quality to random nest(s) according to slider
-    [
-      ;set quality quality-good-nests
-      ;set quality-class "good"
-    ]
   ask nests [ask patches in-radius (nest-size * 1.5) ; create findable area around each nest agent
     [
       set pcolor grey
@@ -304,26 +285,18 @@ to setup-nests
       set brood floor colony-size * brood-percent / 100
     ]
 
-
   let j 1 ;Start at 1 because the nest 0 is the initial nest
   while [j <= number-of-nests]
     [
-      ask nest j
+      ask nest j ; Add the food, protection, predator on the interface
         [
           let circle-xcor xcor
           let circle-ycor ycor
-          ;let initial-angle 360 / number-of-nests * who
 
           let number 0
-          if food [
-            set number number + 1
-          ]
-          if protection [
-            set number number + 1
-          ]
-          if predator [
-            set number number + 1
-          ]
+          if food [set number number + 1]
+          if protection [set number number + 1]
+          if predator [set number number + 1]
 
           if number = 1 [
             ifelse xcor > 0 [
@@ -331,11 +304,9 @@ to setup-nests
               ifelse ycor > 0 [
                 set circle-ycor circle-ycor + nest-size + 4
               ] [
-                ifelse ycor < 0 [
-                  set circle-ycor circle-ycor - nest-size - 4
-                ] [
-                  set circle-xcor  circle-xcor + 3
-                ]
+                ifelse ycor < 0
+                [set circle-ycor circle-ycor - nest-size - 4]
+                [set circle-xcor  circle-xcor + 3]
               ]
             ] [
               ifelse xcor < 0 [
@@ -565,14 +536,11 @@ to setup-nests
                 setxy circle3-xcor circle3-ycor
             ]
           ]
-
-
         ]
 
       set j j + 1
 
     ]
-  ;recolor-nests
 end
 
 to setup-ants
@@ -590,11 +558,6 @@ to setup-ants
     set transports 0
     set waiting int(random-exponential wait-time)
     set carrying 0
-    ;ifelse accept-distribution = "normal"
-      ;[set accept-threshold floor random-normal base-accept-threshold acceptSD]
-      ;[ifelse accept-distribution = "Poisson"
-       ;[set accept-threshold floor random-Poisson base-accept-threshold]
-       ;[set accept-threshold floor random-exponential base-accept-threshold]]
     set accept-threshold 50
     set commitment commitment-base
     set trail-influence trail-influence-base
@@ -858,33 +821,6 @@ to-report scent-at-angle [angle]
     [report [pheromone] of p]
 end
 
-to switch-nest-quality
-  ; reshuffles all good nests to bad nests to simulate dynamic environments
-  let good-nests-list nests with [quality-class = "good"]
-  let bad-nests-list nests with [quality-class = "bad" and who > 0]
-  let count-good count good-nests-list
-  let i 1
-  while [i <= count-good]
-    [
-      let this-good-nest one-of good-nests-list
-      let this-bad-nest one-of bad-nests-list
-      ask this-good-nest  ; set values of good nest to poor
-        [
-          set quality quality-bad-nests
-          set quality-class "bad"
-        ]
-      ask this-bad-nest ; switch good values to  bad nest
-        [
-          set quality-class "good"
-          set quality quality-good-nests
-        ]
-      set good-nests-list good-nests-list with [nests != this-good-nest] ; remove used nests from list
-      set bad-nests-list bad-nests-list with [nests != this-bad-nest]
-      set i i + 1
-    ]
-  recolor-nests
-end
-
 
 to recolor-nests ; sets nest colour based on current quality
   ask nests
@@ -895,13 +831,13 @@ to recolor-nests ; sets nest colour based on current quality
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-741
+837
 23
 1374
-657
+561
 -1
 -1
-6.19
+5.24
 1
 10
 1
@@ -922,25 +858,25 @@ ticks
 30.0
 
 SLIDER
-15
-537
-172
-570
+18
+154
+175
+187
 colony-size
 colony-size
 1
 100
-3.0
+14.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-173
-97
-322
-130
+179
+88
+328
+121
 pheromone-deposition
 pheromone-deposition
 0
@@ -952,10 +888,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-11
-205
-162
-238
+20
+37
+171
+70
 quorum-percent
 quorum-percent
 1
@@ -967,10 +903,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-15
-572
-172
-605
+700
+655
+857
+688
 brood-percent
 brood-percent
 0
@@ -981,76 +917,31 @@ brood-percent
 NIL
 HORIZONTAL
 
-SLIDER
-173
-331
-323
-364
-quality-good-nests
-quality-good-nests
-0
-100
-100.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-174
-365
-323
-398
-quality-bad-nests
-quality-bad-nests
-0
-100
-100.0
-1
-1
-NIL
-HORIZONTAL
-
 TEXTBOX
-15
-42
-165
-60
+22
+12
+172
+30
 Ant
 12
 0.0
 1
 
 TEXTBOX
-19
-513
-169
-531
+22
+130
+172
+148
 Physical
 12
 0.0
 1
 
-SLIDER
-11
-309
-163
-342
-base-accept-threshold
-base-accept-threshold
-0
-100
-90.0
-1
-1
-NIL
-HORIZONTAL
-
 BUTTON
-344
-63
-405
-96
+371
+43
+432
+76
 Setup
 setup
 NIL
@@ -1064,10 +955,10 @@ NIL
 1
 
 SLIDER
-173
-132
-323
-165
+1211
+736
+1361
+769
 diffusion-rate
 diffusion-rate
 0
@@ -1079,10 +970,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-174
-167
-323
-200
+1212
+771
+1361
+804
 evaporation-rate
 evaporation-rate
 0
@@ -1094,10 +985,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-345
-103
-408
-136
+372
+83
+435
+116
 Go
 go
 T
@@ -1111,10 +1002,10 @@ NIL
 1
 
 SLIDER
-12
-61
-162
-94
+1028
+655
+1178
+688
 wait-time
 wait-time
 0
@@ -1126,20 +1017,20 @@ NIL
 HORIZONTAL
 
 CHOOSER
-174
-202
-322
-247
+179
+34
+327
+79
 number-of-nests
 number-of-nests
 1 2 4 8 16
 3
 
 SWITCH
-11
-170
-162
-203
+1027
+764
+1178
+797
 quality-stay?
 quality-stay?
 0
@@ -1147,10 +1038,10 @@ quality-stay?
 -1000
 
 PLOT
-348
-468
-695
-618
+478
+403
+825
+553
 nest populations
 NIL
 NIL
@@ -1180,10 +1071,10 @@ PENS
 "pen-16" 1.0 1 -16777216 true "" "plotxy 16 count ants-on patches with [patch-ID =  16]"
 
 PLOT
-341
-196
-501
-319
+443
+123
+603
+246
 Active ants
 NIL
 NIL
@@ -1198,10 +1089,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot colony-size - (count ants with [class = \"nestant\"])"
 
 PLOT
-347
-327
-551
-465
+453
+260
+657
+398
 Task distribution
 NIL
 NIL
@@ -1219,20 +1110,20 @@ PENS
 "transporters" 1.0 1 -955883 true "" "plot-pen-reset plotxy 3 count ants with [class = \"transporter\"]"
 
 TEXTBOX
-180
-45
-330
-63
+187
+15
+337
+33
 Environmental
 11
 0.0
 1
 
 SLIDER
-11
-344
-163
-377
+863
+656
+1015
+689
 acceptSD
 acceptSD
 0
@@ -1244,10 +1135,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-11
-274
-163
-307
+1030
+838
+1182
+871
 count-WF
 count-WF
 1
@@ -1259,10 +1150,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-12
-423
-164
-456
+19
+86
+171
+119
 commitment-base
 commitment-base
 50
@@ -1274,10 +1165,10 @@ commitment-base
 HORIZONTAL
 
 SLIDER
-10
-97
-162
-130
+1026
+691
+1178
+724
 scout-chance
 scout-chance
 0
@@ -1289,10 +1180,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-623
-208
-680
-253
+756
+65
+813
+110
 QT
 (colony-size * quorum-percent / 100 ) + 0.51
 1
@@ -1300,10 +1191,10 @@ QT
 11
 
 SLIDER
-11
-133
-163
-166
+1027
+727
+1179
+760
 move-speed
 move-speed
 0
@@ -1315,10 +1206,10 @@ NIL
 HORIZONTAL
 
 PLOT
-556
-326
-730
-467
+662
+259
+836
+400
 Temporal nest populations
 NIL
 NIL
@@ -1336,10 +1227,10 @@ PENS
 "nest 4" 1.0 0 -955883 true "" "plot count ants-on patches with [patch-ID = 4]"
 
 SLIDER
-12
-458
-164
-491
+861
+745
+1013
+778
 trail-influence-base
 trail-influence-base
 0
@@ -1351,10 +1242,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-563
-209
-623
-254
+696
+66
+756
+111
 Best-nest
 best-nest
 17
@@ -1362,10 +1253,10 @@ best-nest
 11
 
 MONITOR
-568
-111
-625
-156
+683
+10
+740
+55
 success
 success
 17
@@ -1373,10 +1264,10 @@ success
 11
 
 MONITOR
-506
-210
-563
-255
+639
+67
+696
+112
 Result
 result
 17
@@ -1384,10 +1275,10 @@ result
 11
 
 SLIDER
-172
-62
-320
-95
+1211
+693
+1359
+726
 max-ticks
 max-ticks
 0
@@ -1399,25 +1290,25 @@ NIL
 HORIZONTAL
 
 SLIDER
-174
-296
-322
-329
+1210
+653
+1358
+686
 nest-size
 nest-size
 0
 5
-4.0
+5.0
 1
 1
 NIL
 HORIZONTAL
 
 MONITOR
-506
-258
-563
-303
+625
+117
+682
+162
 DISC
 chosen-nest-discovery
 17
@@ -1425,10 +1316,10 @@ chosen-nest-discovery
 11
 
 MONITOR
-567
-258
-620
-303
+686
+117
+739
+162
 ASSESS
 chosen-nest-assessment
 17
@@ -1436,10 +1327,10 @@ chosen-nest-assessment
 11
 
 MONITOR
-623
-258
-678
-303
+742
+117
+797
+162
 TRANS
 chosen-nest-transport
 17
@@ -1447,10 +1338,10 @@ chosen-nest-transport
 11
 
 MONITOR
-506
-159
-575
-204
+503
+67
+572
+112
 First-found
 first-nest-discovered
 17
@@ -1458,10 +1349,10 @@ first-nest-discovered
 11
 
 MONITOR
-577
-159
-639
-204
+574
+67
+636
+112
 find-time
 first-discovery-time
 17
@@ -1469,10 +1360,10 @@ first-discovery-time
 11
 
 MONITOR
-506
-111
-563
-156
+623
+10
+680
+55
 chosen
 nest-chosen
 17
@@ -1480,31 +1371,21 @@ nest-chosen
 11
 
 SWITCH
-10
-240
-163
-273
+1029
+804
+1182
+837
 QT-error?
 QT-error?
 0
 1
 -1000
 
-CHOOSER
-174
-249
-323
-294
-good-nests
-good-nests
-"single" "half"
-0
-
 MONITOR
-506
-61
-563
-106
+504
+10
+561
+55
 Split
 split
 17
@@ -1512,210 +1393,184 @@ split
 11
 
 MONITOR
-569
-62
-626
-107
+563
+10
+620
+55
 Found
 nests-found
 17
 1
 11
 
-SWITCH
-176
-537
-328
-570
-dynamic-environment?
-dynamic-environment?
-1
-1
--1000
-
-SLIDER
-176
-573
-329
-606
-switch-point
-switch-point
-0
-15000
-68.0
-1
-1
-NIL
-HORIZONTAL
-
 CHOOSER
-12
-378
-165
-423
+864
+690
+1017
+735
 accept-distribution
 accept-distribution
 "normal" "Poisson"
 1
 
 TEXTBOX
-19
-625
-169
-643
+18
+190
+168
+208
 Nest
 12
 0.0
 1
 
 SWITCH
+14
+212
+130
+245
+Nest1Food
+Nest1Food
+0
+1
+-1000
+
+SWITCH
+145
+212
+289
+245
+Nest1Protection
+Nest1Protection
+0
+1
+-1000
+
+SWITCH
+301
+211
+437
+244
+Nest1Predator
+Nest1Predator
+0
+1
+-1000
+
+SWITCH
+14
+257
+130
+290
+Nest2Food
+Nest2Food
+1
+1
+-1000
+
+SWITCH
+145
+257
+289
+290
+Nest2Protection
+Nest2Protection
+0
+1
+-1000
+
+SWITCH
+301
+257
+437
+290
+Nest2Predator
+Nest2Predator
+1
+1
+-1000
+
+SWITCH
+14
+302
+130
+335
+Nest3Food
+Nest3Food
+0
+1
+-1000
+
+SWITCH
+14
+347
+130
+380
+Nest4Food
+Nest4Food
+0
+1
+-1000
+
+SWITCH
+14
+391
+130
+424
+Nest5Food
+Nest5Food
+0
+1
+-1000
+
+SWITCH
+14
+436
+130
+469
+Nest6Food
+Nest6Food
+0
+1
+-1000
+
+SWITCH
+14
+482
+130
+515
+Nest7Food
+Nest7Food
+0
+1
+-1000
+
+SWITCH
 15
+526
+131
+559
+Nest8Food
+Nest8Food
+0
+1
+-1000
+
+SWITCH
+15
+570
+131
+603
+Nest9Food
+Nest9Food
+1
+1
+-1000
+
+SWITCH
+15
+614
+138
 647
-131
-680
-Nest1Food
-Nest1Food
-0
-1
--1000
-
-SWITCH
-166
-645
-310
-678
-Nest1Protection
-Nest1Protection
-0
-1
--1000
-
-SWITCH
-355
-644
-491
-677
-Nest1Predator
-Nest1Predator
-0
-1
--1000
-
-SWITCH
-15
-692
-131
-725
-Nest2Food
-Nest2Food
-1
-1
--1000
-
-SWITCH
-166
-690
-310
-723
-Nest2Protection
-Nest2Protection
-0
-1
--1000
-
-SWITCH
-355
-690
-491
-723
-Nest2Predator
-Nest2Predator
-1
-1
--1000
-
-SWITCH
-15
-737
-131
-770
-Nest3Food
-Nest3Food
-0
-1
--1000
-
-SWITCH
-15
-782
-131
-815
-Nest4Food
-Nest4Food
-0
-1
--1000
-
-SWITCH
-15
-826
-131
-859
-Nest5Food
-Nest5Food
-0
-1
--1000
-
-SWITCH
-15
-871
-131
-904
-Nest6Food
-Nest6Food
-0
-1
--1000
-
-SWITCH
-15
-917
-131
-950
-Nest7Food
-Nest7Food
-0
-1
--1000
-
-SWITCH
-16
-961
-132
-994
-Nest8Food
-Nest8Food
-0
-1
--1000
-
-SWITCH
-16
-1005
-132
-1038
-Nest9Food
-Nest9Food
-1
-1
--1000
-
-SWITCH
-16
-1049
-139
-1082
 Nest10Food
 Nest10Food
 0
@@ -1723,10 +1578,10 @@ Nest10Food
 -1000
 
 SWITCH
-16
-1095
-139
-1128
+15
+660
+138
+693
 Nest11Food
 Nest11Food
 1
@@ -1734,10 +1589,10 @@ Nest11Food
 -1000
 
 SWITCH
-15
-1141
-138
-1174
+14
+706
+137
+739
 Nest12Food
 Nest12Food
 1
@@ -1745,10 +1600,10 @@ Nest12Food
 -1000
 
 SWITCH
-15
-1186
-138
-1219
+14
+751
+137
+784
 Nest13Food
 Nest13Food
 1
@@ -1756,10 +1611,10 @@ Nest13Food
 -1000
 
 SWITCH
-15
-1231
-138
-1264
+14
+796
+137
+829
 Nest14Food
 Nest14Food
 0
@@ -1767,10 +1622,10 @@ Nest14Food
 -1000
 
 SWITCH
-15
-1277
-138
-1310
+14
+842
+137
+875
 Nest15Food
 Nest15Food
 1
@@ -1778,10 +1633,10 @@ Nest15Food
 -1000
 
 SWITCH
-15
-1323
-138
-1356
+14
+888
+137
+921
 Nest16Food
 Nest16Food
 0
@@ -1789,10 +1644,10 @@ Nest16Food
 -1000
 
 SWITCH
-166
-737
-310
-770
+145
+304
+289
+337
 Nest3Protection
 Nest3Protection
 1
@@ -1800,274 +1655,274 @@ Nest3Protection
 -1000
 
 SWITCH
-166
+145
+349
+289
+382
+Nest4Protection
+Nest4Protection
+0
+1
+-1000
+
+SWITCH
+145
+395
+289
+428
+Nest5Protection
+Nest5Protection
+0
+1
+-1000
+
+SWITCH
+146
+438
+290
+471
+Nest6Protection
+Nest6Protection
+1
+1
+-1000
+
+SWITCH
+145
+484
+289
+517
+Nest7Protection
+Nest7Protection
+1
+1
+-1000
+
+SWITCH
+146
+530
+290
+563
+Nest8Protection
+Nest8Protection
+1
+1
+-1000
+
+SWITCH
+145
+574
+289
+607
+Nest9Protection
+Nest9Protection
+0
+1
+-1000
+
+SWITCH
+145
+618
+296
+651
+Nest10Protection
+Nest10Protection
+1
+1
+-1000
+
+SWITCH
+144
+662
+295
+695
+Nest11Protection
+Nest11Protection
+0
+1
+-1000
+
+SWITCH
+143
+707
+294
+740
+Nest12Protection
+Nest12Protection
+1
+1
+-1000
+
+SWITCH
+143
+751
+294
+784
+Nest13Protection
+Nest13Protection
+1
+1
+-1000
+
+SWITCH
+142
+796
+293
+829
+Nest14Protection
+Nest14Protection
+0
+1
+-1000
+
+SWITCH
+142
+843
+293
+876
+Nest15Protection
+Nest15Protection
+1
+1
+-1000
+
+SWITCH
+142
+887
+293
+920
+Nest16Protection
+Nest16Protection
+1
+1
+-1000
+
+SWITCH
+302
+305
+438
+338
+Nest3Predator
+Nest3Predator
+0
+1
+-1000
+
+SWITCH
+302
+349
+438
+382
+Nest4Predator
+Nest4Predator
+1
+1
+-1000
+
+SWITCH
+301
+394
+437
+427
+Nest5Predator
+Nest5Predator
+1
+1
+-1000
+
+SWITCH
+301
+437
+437
+470
+Nest6Predator
+Nest6Predator
+0
+1
+-1000
+
+SWITCH
+300
+482
+436
+515
+Nest7Predator
+Nest7Predator
+1
+1
+-1000
+
+SWITCH
+300
+528
+436
+561
+Nest8Predator
+Nest8Predator
+1
+1
+-1000
+
+SWITCH
+300
+573
+436
+606
+Nest9Predator
+Nest9Predator
+0
+1
+-1000
+
+SWITCH
+300
+617
+443
+650
+Nest10Predator
+Nest10Predator
+1
+1
+-1000
+
+SWITCH
+301
+662
+444
+695
+Nest11Predator
+Nest11Predator
+1
+1
+-1000
+
+SWITCH
+300
+706
+443
+739
+Nest12Predator
+Nest12Predator
+1
+1
+-1000
+
+SWITCH
+300
+749
+443
 782
-310
-815
-Nest4Protection
-Nest4Protection
-0
+Nest13Predator
+Nest13Predator
+1
 1
 -1000
 
 SWITCH
-166
+300
+795
+443
 828
-310
-861
-Nest5Protection
-Nest5Protection
-0
-1
--1000
-
-SWITCH
-167
-871
-311
-904
-Nest6Protection
-Nest6Protection
-1
-1
--1000
-
-SWITCH
-166
-917
-310
-950
-Nest7Protection
-Nest7Protection
-1
-1
--1000
-
-SWITCH
-167
-963
-311
-996
-Nest8Protection
-Nest8Protection
-1
-1
--1000
-
-SWITCH
-166
-1007
-310
-1040
-Nest9Protection
-Nest9Protection
-0
-1
--1000
-
-SWITCH
-166
-1051
-317
-1084
-Nest10Protection
-Nest10Protection
-1
-1
--1000
-
-SWITCH
-165
-1095
-316
-1128
-Nest11Protection
-Nest11Protection
-0
-1
--1000
-
-SWITCH
-164
-1140
-315
-1173
-Nest12Protection
-Nest12Protection
-1
-1
--1000
-
-SWITCH
-165
-1186
-316
-1219
-Nest13Protection
-Nest13Protection
-1
-1
--1000
-
-SWITCH
-164
-1231
-315
-1264
-Nest14Protection
-Nest14Protection
-0
-1
--1000
-
-SWITCH
-164
-1278
-315
-1311
-Nest15Protection
-Nest15Protection
-1
-1
--1000
-
-SWITCH
-164
-1322
-315
-1355
-Nest16Protection
-Nest16Protection
-1
-1
--1000
-
-SWITCH
-356
-738
-492
-771
-Nest3Predator
-Nest3Predator
-0
-1
--1000
-
-SWITCH
-356
-782
-492
-815
-Nest4Predator
-Nest4Predator
-1
-1
--1000
-
-SWITCH
-355
-827
-491
-860
-Nest5Predator
-Nest5Predator
-1
-1
--1000
-
-SWITCH
-355
-870
-491
-903
-Nest6Predator
-Nest6Predator
-0
-1
--1000
-
-SWITCH
-354
-915
-490
-948
-Nest7Predator
-Nest7Predator
-1
-1
--1000
-
-SWITCH
-354
-961
-490
-994
-Nest8Predator
-Nest8Predator
-1
-1
--1000
-
-SWITCH
-354
-1006
-490
-1039
-Nest9Predator
-Nest9Predator
-0
-1
--1000
-
-SWITCH
-354
-1050
-497
-1083
-Nest10Predator
-Nest10Predator
-1
-1
--1000
-
-SWITCH
-355
-1095
-498
-1128
-Nest11Predator
-Nest11Predator
-1
-1
--1000
-
-SWITCH
-354
-1139
-497
-1172
-Nest12Predator
-Nest12Predator
-1
-1
--1000
-
-SWITCH
-355
-1184
-498
-1217
-Nest13Predator
-Nest13Predator
-1
-1
--1000
-
-SWITCH
-355
-1230
-498
-1263
 Nest14Predator
 Nest14Predator
 1
@@ -2075,10 +1930,10 @@ Nest14Predator
 -1000
 
 SWITCH
-355
-1278
-498
-1311
+300
+843
+443
+876
 Nest15Predator
 Nest15Predator
 1
@@ -2086,10 +1941,10 @@ Nest15Predator
 -1000
 
 SWITCH
-356
-1321
-499
-1354
+301
+886
+444
+919
 Nest16Predator
 Nest16Predator
 1
