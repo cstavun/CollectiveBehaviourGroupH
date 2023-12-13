@@ -278,8 +278,6 @@ to setup-nests
           if predator [
             set quality quality - 30
           ]
-
-
         ]
       set i i + 1
     ]
@@ -305,7 +303,6 @@ to setup-nests
       ask patches in-radius (nest-size * 1.5) [set patch-ID 99] ; set different ID for home nest patches
       set brood floor colony-size * brood-percent / 100
     ]
-  let food1 Nest1Food
 
 
   let j 1 ;Start at 1 because the nest 0 is the initial nest
@@ -315,7 +312,7 @@ to setup-nests
         [
           let circle-xcor xcor
           let circle-ycor ycor
-          let initial-angle 360 / number-of-nests * who
+          ;let initial-angle 360 / number-of-nests * who
 
           let number 0
           if food [
@@ -379,15 +376,199 @@ to setup-nests
                 set shape "star"
                 set size 2
                 set color yellow
-                set circle-xcor (radius * cos (initial-angle))
-                set circle-ycor (radius * sin (initial-angle))
                 setxy circle-xcor circle-ycor
               ]
               ]
             ]
           ]
 
+          if number = 2 [
+            let circle1-xcor 0
+            let circle1-ycor 0
+            let circle2-xcor 0
+            let circle2-ycor 0
+
+
+            ifelse xcor > 0 [
+              ifelse ycor > 0 [
+                set circle2-ycor circle-ycor
+                set circle1-ycor circle-ycor + nest-size + 4
+                set circle1-xcor circle-xcor
+                set circle2-xcor circle-xcor + nest-size + 4
+              ][ifelse ycor < 0
+                [
+                set circle1-xcor circle-xcor
+                set circle2-xcor circle-xcor + nest-size + 4
+                set circle2-ycor circle-ycor
+                set circle1-ycor circle-ycor - nest-size - 4
+                ][
+                set circle1-xcor circle-xcor + nest-size + 3
+                set circle2-xcor circle-xcor + nest-size + 3
+                set circle2-ycor circle-ycor + nest-size + 3
+                set circle1-ycor circle-ycor - nest-size - 3
+                ]]]
+            [ifelse xcor < 0 [
+              ifelse ycor > 0 [
+                set circle2-ycor circle-ycor
+                set circle1-ycor circle-ycor + nest-size + 4
+                set circle1-xcor circle-xcor
+                set circle2-xcor circle-xcor - nest-size - 4
+              ][ifelse ycor < 0
+                [
+                set circle1-xcor circle-xcor
+                set circle2-xcor circle-xcor - nest-size - 4
+                set circle2-ycor circle-ycor
+                set circle1-ycor circle-ycor - nest-size - 4
+                ][
+                set circle1-xcor circle-xcor - nest-size - 3
+                set circle2-xcor circle-xcor - nest-size - 3
+                set circle2-ycor circle-ycor + nest-size + 3
+                set circle1-ycor circle-ycor - nest-size - 3
+                ]]
+            ][
+              ifelse ycor > 0 [
+                set circle2-ycor circle-ycor + nest-size + 3
+                set circle1-ycor circle-ycor + nest-size + 3
+                set circle1-xcor circle-xcor + nest-size + 3
+                set circle2-xcor circle-xcor - nest-size - 3
+              ]
+                [
+                set circle1-xcor circle-xcor + nest-size + 3
+                set circle2-xcor circle-xcor - nest-size - 3
+                set circle2-ycor circle-ycor - nest-size - 3
+                set circle1-ycor circle-ycor - nest-size - 3
+                ]]
+            ]
+
+            let taken1 false
+            if predator [
+              hatch 1 [
+                set taken1 true
+                set shape "triangle"
+                set size 2
+                set color red
+                setxy circle1-xcor circle1-ycor
+              ]
+            ]
+            if food [
+              hatch 1 [
+                set shape "square"
+                set size 2
+                set color violet
+                ifelse taken1 [
+                  setxy circle2-xcor circle2-ycor
+                ][set taken1 true
+                  setxy circle1-xcor circle1-ycor]
+              ]
+            ]
+            if protection [
+              hatch 1 [
+                set shape "star"
+                set size 2
+                set color yellow
+                setxy circle2-xcor circle2-ycor
+              ]
+            ]
+          ]
+
+          if number = 3 [
+            let circle1-xcor 0
+            let circle1-ycor 0
+            let circle2-xcor 0
+            let circle2-ycor 0
+            let circle3-xcor 0
+            let circle3-ycor 0
+
+
+            ifelse xcor > 0 [
+              ifelse ycor > 0 [
+                set circle2-ycor circle-ycor
+                set circle1-ycor circle-ycor + nest-size + 4
+                set circle1-xcor circle-xcor
+                set circle2-xcor circle-xcor + nest-size + 4
+                set circle3-xcor circle-xcor + nest-size + 4
+                set circle3-ycor circle-ycor + nest-size + 4
+              ][ifelse ycor < 0
+                [
+                set circle1-xcor circle-xcor
+                set circle2-xcor circle-xcor + nest-size + 4
+                set circle2-ycor circle-ycor
+                set circle1-ycor circle-ycor - nest-size - 4
+                set circle3-xcor circle-xcor + nest-size + 4
+                set circle3-ycor circle-ycor - nest-size - 4
+                ][
+                set circle1-xcor circle-xcor + nest-size + 3
+                set circle2-xcor circle-xcor + nest-size + 3
+                set circle2-ycor circle-ycor + nest-size + 3
+                set circle1-ycor circle-ycor - nest-size - 3
+                set circle3-xcor circle-xcor + nest-size + 7
+                set circle3-ycor circle-ycor
+                ]]]
+            [ifelse xcor < 0 [
+              ifelse ycor > 0 [
+                set circle2-ycor circle-ycor
+                set circle1-ycor circle-ycor + nest-size + 4
+                set circle1-xcor circle-xcor
+                set circle2-xcor circle-xcor - nest-size - 4
+                set circle3-xcor circle-xcor - nest-size - 4
+                set circle3-ycor circle-ycor + nest-size + 4
+              ][ifelse ycor < 0
+                [
+                set circle1-xcor circle-xcor
+                set circle2-xcor circle-xcor - nest-size - 4
+                set circle2-ycor circle-ycor
+                set circle1-ycor circle-ycor - nest-size - 4
+                set circle3-xcor circle-xcor - nest-size - 4
+                set circle3-ycor circle-ycor - nest-size - 4
+                ][
+                set circle1-xcor circle-xcor - nest-size - 3
+                set circle2-xcor circle-xcor - nest-size - 3
+                set circle2-ycor circle-ycor + nest-size + 3
+                set circle1-ycor circle-ycor - nest-size - 3
+                set circle3-xcor circle-xcor - nest-size - 7
+                set circle3-ycor circle-ycor
+                ]]
+            ][
+              ifelse ycor > 0 [
+                set circle2-ycor circle-ycor + nest-size + 3
+                set circle1-ycor circle-ycor + nest-size + 3
+                set circle1-xcor circle-xcor + nest-size + 3
+                set circle2-xcor circle-xcor - nest-size - 3
+                set circle3-xcor circle-xcor
+                set circle3-ycor circle-ycor + nest-size + 7
+              ]
+                [
+                set circle1-xcor circle-xcor + nest-size + 3
+                set circle2-xcor circle-xcor - nest-size - 3
+                set circle2-ycor circle-ycor - nest-size - 3
+                set circle1-ycor circle-ycor - nest-size - 3
+                set circle3-xcor circle-xcor
+                set circle3-ycor circle-ycor - nest-size - 7
+                ]]
+            ]
+            hatch 1 [
+                set shape "triangle"
+                set size 2
+                set color red
+                setxy circle1-xcor circle1-ycor
+              ]
+            hatch 1 [
+                set shape "star"
+                set size 2
+                set color yellow
+                setxy circle2-xcor circle2-ycor
+              ]
+            hatch 1 [
+                set shape "square"
+                set size 2
+                set color violet
+                setxy circle3-xcor circle3-ycor
+            ]
+          ]
+
+
         ]
+
       set j j + 1
 
     ]
@@ -952,7 +1133,7 @@ CHOOSER
 number-of-nests
 number-of-nests
 1 2 4 8 16
-2
+3
 
 SWITCH
 11
@@ -1226,7 +1407,7 @@ nest-size
 nest-size
 0
 5
-5.0
+4.0
 1
 1
 NIL
@@ -1361,7 +1542,7 @@ switch-point
 switch-point
 0
 15000
-0.0
+68.0
 1
 1
 NIL
@@ -1405,7 +1586,7 @@ SWITCH
 678
 Nest1Protection
 Nest1Protection
-1
+0
 1
 -1000
 
@@ -1416,7 +1597,7 @@ SWITCH
 677
 Nest1Predator
 Nest1Predator
-1
+0
 1
 -1000
 
@@ -1438,7 +1619,7 @@ SWITCH
 723
 Nest2Protection
 Nest2Protection
-1
+0
 1
 -1000
 
@@ -1460,7 +1641,7 @@ SWITCH
 770
 Nest3Food
 Nest3Food
-1
+0
 1
 -1000
 
@@ -1471,7 +1652,7 @@ SWITCH
 815
 Nest4Food
 Nest4Food
-1
+0
 1
 -1000
 
@@ -1625,7 +1806,7 @@ SWITCH
 815
 Nest4Protection
 Nest4Protection
-1
+0
 1
 -1000
 
@@ -1768,7 +1949,7 @@ SWITCH
 771
 Nest3Predator
 Nest3Predator
-1
+0
 1
 -1000
 
@@ -1790,7 +1971,7 @@ SWITCH
 860
 Nest5Predator
 Nest5Predator
-0
+1
 1
 -1000
 
@@ -1812,7 +1993,7 @@ SWITCH
 948
 Nest7Predator
 Nest7Predator
-0
+1
 1
 -1000
 
@@ -1823,7 +2004,7 @@ SWITCH
 994
 Nest8Predator
 Nest8Predator
-0
+1
 1
 -1000
 
