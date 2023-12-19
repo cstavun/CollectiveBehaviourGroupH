@@ -10,6 +10,7 @@ Bella MURADIAN : [@squirreln1](https://github.com/cstavun)
 
 ## Repository Structure :
 - **FirstReport:** contains both source and a prebuilt PDF
+- **Report2:** contains both source and a prebuilt PDF
 
 
 ## Introduction : 
