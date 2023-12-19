@@ -304,9 +304,9 @@ to setup-nests
               ifelse ycor > 0 [
                 set circle-ycor circle-ycor + nest-size + 4
               ] [
-                ifelse ycor < 0 [
-                  set circle-ycor circle-ycor - nest-size - 4
-        ] [set circle-xcor  circle-xcor + 3]
+                ifelse ycor < 0
+                [set circle-ycor circle-ycor - nest-size - 4]
+                [set circle-xcor  circle-xcor + 3]
               ]
             ] [
               ifelse xcor < 0 [
@@ -536,14 +536,11 @@ to setup-nests
                 setxy circle3-xcor circle3-ycor
             ]
           ]
-
-
         ]
 
       set j j + 1
 
     ]
-  ;recolor-nests
 end
 
 to setup-ants
@@ -561,11 +558,6 @@ to setup-ants
     set transports 0
     set waiting int(random-exponential wait-time)
     set carrying 0
-    ;ifelse accept-distribution = "normal"
-      ;[set accept-threshold floor random-normal base-accept-threshold acceptSD]
-      ;[ifelse accept-distribution = "Poisson"
-       ;[set accept-threshold floor random-Poisson base-accept-threshold]
-       ;[set accept-threshold floor random-exponential base-accept-threshold]]
     set accept-threshold 50
     set commitment commitment-base
     set trail-influence trail-influence-base
@@ -613,16 +605,21 @@ to search
 
   if ID > 0 and ID < 99  ; if arrive at a potential new nest site
     [
-      print(ID)
+      ;print(ID)
       set scout-ant 1
-      print ([quality] of nest ID)
+      ;print ([quality] of nest ID)
       if [quality-class] of nest ID = "good"[
         ifelse [quality] of nest ID >= accept-threshold
         [set accept-threshold [quality] of nest ID
           ask nest ID
           [set quality-class "good"
             set color yellow
-          ]]
+          ]
+          set class "decided"
+          set color red
+          set current-vote nest ID
+          ask nest ID [set votes votes + 1]
+          set going-to nest 0]
         [ask nest ID [
           set quality-class "bad"
           set color orange
@@ -636,14 +633,7 @@ to search
       ifelse quality-stay?
         [set waiting ceiling (random-exponential wait-time * ([quality] of nest ID / 100))]
         [set waiting int(random-exponential wait-time)]
-      if [quality] of nest ID > accept-threshold
-        [
-          set class "decided"
-          set color red
-          set current-vote nest ID
-          ask nest ID [set votes votes + 1]
-          set going-to nest 0
-        ]
+
 
      ]
 end
@@ -660,11 +650,17 @@ to recruit
        move
        let ID [patch-ID] of patch-here
        if ID = [who] of current-vote ;; arrived at current vote
-         [
+         [ifelse [quality-class] of nest ID = "good"[
            set going-to nest 0
            ifelse quality-stay?
              [set waiting ceiling (random-exponential wait-time * ([quality] of nest ID / 100))]
              [set waiting int(random-exponential wait-time)]
+         ][
+           set class "scout"
+           set color brown
+           set going-to nobody
+           set current-vote nobody
+         ]
          ]
        if ID = 99    ;; arrive at home
          [
@@ -874,7 +870,7 @@ colony-size
 colony-size
 1
 100
-14.0
+40.0
 1
 1
 NIL
@@ -904,7 +900,7 @@ quorum-percent
 quorum-percent
 1
 100
-100.0
+50.0
 1
 1
 NIL
@@ -1166,7 +1162,7 @@ commitment-base
 commitment-base
 50
 99.9
-50.0
+99.0
 0.1
 1
 %
@@ -1460,7 +1456,7 @@ SWITCH
 244
 Nest1Predator
 Nest1Predator
-0
+1
 1
 -1000
 
@@ -1669,7 +1665,7 @@ SWITCH
 382
 Nest4Protection
 Nest4Protection
-0
+1
 1
 -1000
 
@@ -1680,7 +1676,7 @@ SWITCH
 428
 Nest5Protection
 Nest5Protection
-0
+1
 1
 -1000
 

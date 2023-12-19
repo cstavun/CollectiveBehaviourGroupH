@@ -605,16 +605,21 @@ to search
 
   if ID > 0 and ID < 99  ; if arrive at a potential new nest site
     [
-      print(ID)
+      ;print(ID)
       set scout-ant 1
-      print ([quality] of nest ID)
+      ;print ([quality] of nest ID)
       if [quality-class] of nest ID = "good"[
         ifelse [quality] of nest ID >= accept-threshold
         [set accept-threshold [quality] of nest ID
           ask nest ID
           [set quality-class "good"
             set color yellow
-          ]]
+          ]
+          set class "decided"
+          set color red
+          set current-vote nest ID
+          ask nest ID [set votes votes + 1]
+          set going-to nest 0]
         [ask nest ID [
           set quality-class "bad"
           set color orange
@@ -628,14 +633,6 @@ to search
       ifelse quality-stay?
         [set waiting ceiling (random-exponential wait-time * ([quality] of nest ID / 100))]
         [set waiting int(random-exponential wait-time)]
-      if [quality] of nest ID > accept-threshold
-        [
-          set class "decided"
-          set color red
-          set current-vote nest ID
-          ask nest ID [set votes votes + 1]
-          set going-to nest 0
-        ]
 
      ]
 end
@@ -652,11 +649,17 @@ to recruit
        move
        let ID [patch-ID] of patch-here
        if ID = [who] of current-vote ;; arrived at current vote
-         [
+         [ifelse [quality-class] of nest ID = "good"[
            set going-to nest 0
            ifelse quality-stay?
              [set waiting ceiling (random-exponential wait-time * ([quality] of nest ID / 100))]
              [set waiting int(random-exponential wait-time)]
+         ][
+           set class "scout"
+           set color brown
+           set going-to nobody
+           set current-vote nobody
+         ]
          ]
        if ID = 99    ;; arrive at home
          [
@@ -866,7 +869,7 @@ colony-size
 colony-size
 1
 100
-14.0
+40.0
 1
 1
 NIL
@@ -896,7 +899,7 @@ quorum-percent
 quorum-percent
 1
 100
-100.0
+50.0
 1
 1
 NIL
@@ -1158,7 +1161,7 @@ commitment-base
 commitment-base
 50
 99.9
-50.0
+99.0
 0.1
 1
 %
@@ -1452,7 +1455,7 @@ SWITCH
 244
 Nest1Predator
 Nest1Predator
-0
+1
 1
 -1000
 
@@ -1661,7 +1664,7 @@ SWITCH
 382
 Nest4Protection
 Nest4Protection
-0
+1
 1
 -1000
 
@@ -1672,7 +1675,7 @@ SWITCH
 428
 Nest5Protection
 Nest5Protection
-0
+1
 1
 -1000
 
